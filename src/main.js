@@ -125,7 +125,6 @@ async function main() {
     app.ticker.add(dt => {
         const time = inst._elapsed;
         if (time >= nextTimeToBeatAudio) {
-            currentBeatTimeAudio = beat * timePerBeat;
             beat++;
             nextTimeToBeatAudio = beat * timePerBeat;
             
