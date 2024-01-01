@@ -1,7 +1,13 @@
 import { Application, Sprite, Texture, Container,Graphics } from 'pixi.js';
 import { Sound } from '@pixi/sound';
+import { extend } from '@pixi/colord';
 
 
+
+let nextTimeToBeat = 0;
+let beat = 0;
+let currentBeatTime = 0;
+let inst = null;
 const MAP_SIZE = 780;
 
 const app = new Application({
@@ -33,71 +39,81 @@ for (let i = 0; i < 144; i++) {
     container.addChild(rectangle);
 }
 
-const player = Sprite.from(Texture.WHITE);
-player.tint = "red";
 
-player.width = 52;
-player.height = 52;
-
-player.x = padding;
-player.y = padding;
-
-container.addChild(player);
-
-function move(event) {
-    if (event.defaultPrevented) {
-        return; // Do nothing if the event was already processed
+class  Player extends Container {
+    constructor() {
+        super();
+        this.player = Sprite.from(Texture.WHITE);
+        this.player.tint = "red";
+        
+        this.player.width = 52;
+        this.player.height = 52;
+        
+        this.player.x = padding;
+        this.player.y = padding;
+        
+        this.addChild(this.player);
+        
+        
+        window.addEventListener("keydown", this.move, true);
     }
 
-    switch (event.key) {
-        case "ArrowDown":
-            if (player.y < MAP_SIZE - 64) {
-                player.y += 64;
-            }
-            break;
-        case "ArrowUp":
-            if (player.y > 64) {
-                player.y -= 64;
-            }
-            break;
-        case "ArrowLeft":
-            if (player.x > 64) {
-                player.x -= 64;
-            }
-            break;
-        case "ArrowRight":
-            if (player.x < MAP_SIZE - 64) {
-                player.x += 64;
-            }
-
-            break;
-        default:
-            return; // Quit when this doesn't handle the key event.
+    move = (event) => {
+        if (event.defaultPrevented) {
+            return; // Do nothing if the event was already processed
+        }
+    
+        switch (event.key) {
+            case "ArrowDown":
+                if (this.player.y < MAP_SIZE - 64) {
+                    this.player.y += 64;
+                }
+                break;
+            case "ArrowUp":
+                if (this.player.y > 64) {
+                    this.player.y -= 64;
+                }
+                break;
+            case "ArrowLeft":
+                if (this.player.x > 64) {
+                    this.player.x -= 64;
+                }
+                break;
+            case "ArrowRight":
+                if (this.player.x < MAP_SIZE - 64) {
+                    this.player.x += 64;
+                }
+    
+                break;
+            default:
+                return; // Quit when this doesn't handle the key event.
+        }
+    
+        // Cancel the default action to avoid it being handled twice
+        event.preventDefault();
     }
 
-    // Cancel the default action to avoid it being handled twice
-    event.preventDefault();
 }
 
-window.addEventListener("keydown", move, true);
+container.addChild(new Player())
+
+
+
 
 
 var graphics = new Graphics();
 
 graphics.beginFill(0xFFFF00);
 graphics.lineStyle(5, 0xFF0000);
-graphics.drawRect(0, 0, 300, 200);
+graphics.drawRect(0, 0, 30, 30);
 
 app.stage.addChild(graphics);
 
-let nextTimeToBeat = 0;
-let beat = 0;
-let currentBeatTime = 0;
 
 graphics.alpha = 0.5;
 async function main() {
     const sound = Sound.from('beat.wav');
-    const inst = await sound.play();
+    inst = await sound.play();
     
     const timePerBeat = 60 / 130 * 4;
 
@@ -107,6 +123,7 @@ async function main() {
             currentBeatTime = beat * timePerBeat;
             beat++;
             nextTimeToBeat = beat * timePerBeat;
+            // fix time
             graphics.alpha = 1;
         } else {
             graphics.alpha -= 0.03 * dt;
