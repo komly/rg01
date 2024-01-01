@@ -14,6 +14,7 @@
   "author": "Dmitry Petrov <komly@yandex.ru>",
   "license": "ISC",
   "dependencies": {
+    "@pixi/sound": "^5.2.2",
     "pixi.js": "^7.3.3"
   },
   "repository": "git@github.com:komly/rg01.git"
