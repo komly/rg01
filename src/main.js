@@ -62,8 +62,8 @@ class  Player extends Container {
             return; // Do nothing if the event was already processed
         }
         const ct = +new Date();
-        if (ct > nextBeatTime - 100 || ct < currentBeatTime + 100) {
-            console.log('allow');
+        if (!(ct > nextBeatTime - 100 || ct < currentBeatTime + 100)) {
+            return;
         }
     
         switch (event.key) {
