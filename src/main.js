@@ -1,4 +1,7 @@
+
 import { Application, Sprite, Texture, Container } from 'pixi.js';
+import { Sound } from '@pixi/sound';
+
 
 const MAP_SIZE = 780;
 
@@ -78,3 +81,7 @@ function move(event) {
 }
 
 window.addEventListener("keydown", move, true);
+
+
+const sound = Sound.from('beat.wav');
+sound.play();
