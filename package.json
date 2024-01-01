@@ -1,13 +1,16 @@
 {
-  "name": "beat-am-up",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "game",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
-  "author": "",
-  "license": "ISC",
+  "devDependencies": {
+    "vite": "^5.0.8"
+  },
   "dependencies": {
     "pixi.js": "^7.3.3"
   }
