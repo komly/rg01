@@ -64,9 +64,12 @@ class Player extends Container {
             return; // Do nothing if the event was already processed
         }
         const ct = +new Date();
-        if (!(ct > nextBeatTime - 100 || ct < currentBeatTime + 100)) {
+        const delta =  Math.min(Math.abs(ct - nextBeatTime), Math.abs(ct - currentBeatTime));
+        if (delta > 200) {
             return;
         }
+
+        console.log(delta);
     
         switch (event.key) {
             case "ArrowDown":
