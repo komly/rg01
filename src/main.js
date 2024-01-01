@@ -2,11 +2,10 @@ import { Application, Sprite, Texture, Container,Graphics } from 'pixi.js';
 import { Sound } from '@pixi/sound';
 import { extend } from '@pixi/colord';
 
+const timePerBeat = 60 / 130 * 4;
+let currentBeatTime = +Date.now();
+let nextBeatTime = currentBeatTime + timePerBeat * 1000;
 
-
-let nextTimeToBeat = 0;
-let beat = 0;
-let currentBeatTime = 0;
 let inst = null;
 const MAP_SIZE = 780;
 
@@ -62,6 +61,10 @@ class  Player extends Container {
         if (event.defaultPrevented) {
             return; // Do nothing if the event was already processed
         }
+        const ct = +new Date();
+        if (ct > nextBeatTime - 100 || ct < currentBeatTime + 100) {
+            console.log('allow');
+        }
     
         switch (event.key) {
             case "ArrowDown":
@@ -115,15 +118,21 @@ async function main() {
     const sound = Sound.from('beat.wav');
     inst = await sound.play();
     
-    const timePerBeat = 60 / 130 * 4;
+    let nextTimeToBeatAudio = 0;
+    let beat = 0;
+    let currentBeatTimeAudio = 0;
 
     app.ticker.add(dt => {
         const time = inst._elapsed;
-        if (time >= nextTimeToBeat) {
-            currentBeatTime = beat * timePerBeat;
+        if (time >= nextTimeToBeatAudio) {
+            currentBeatTimeAudio = beat * timePerBeat;
             beat++;
-            nextTimeToBeat = beat * timePerBeat;
+            nextTimeToBeatAudio = beat * timePerBeat;
+            
             // fix time
+            currentBeatTime = +Date.now();
+            nextBeatTime = currentBeatTime + timePerBeat * 1000;
+            
             graphics.alpha = 1;
         } else {
             graphics.alpha -= 0.03 * dt;
