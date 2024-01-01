@@ -1,8 +1,5 @@
-import { Application, Sprite, Texture, Container,Graphics } from 'pixi.js';
+import { Application, Sprite, Texture, Container, Graphics } from 'pixi.js';
 import { Sound } from '@pixi/sound';
-import { extend } from '@pixi/colord';
-
-
 
 let nextTimeToBeat = 0;
 let beat = 0;
@@ -40,65 +37,78 @@ for (let i = 0; i < 144; i++) {
 }
 
 
-class  Player extends Container {
+class Player extends Container {
     constructor() {
         super();
         this.player = Sprite.from(Texture.WHITE);
         this.player.tint = "red";
-        
+
         this.player.width = 52;
         this.player.height = 52;
-        
+
         this.player.x = padding;
         this.player.y = padding;
-        
+
         this.addChild(this.player);
-        
-        
+
+
         window.addEventListener("keydown", this.move, true);
     }
+
+    currentStep = null;
 
     move = (event) => {
         if (event.defaultPrevented) {
             return; // Do nothing if the event was already processed
         }
-    
-        switch (event.key) {
-            case "ArrowDown":
-                if (this.player.y < MAP_SIZE - 64) {
-                    this.player.y += 64;
-                }
-                break;
-            case "ArrowUp":
-                if (this.player.y > 64) {
-                    this.player.y -= 64;
-                }
-                break;
-            case "ArrowLeft":
-                if (this.player.x > 64) {
-                    this.player.x -= 64;
-                }
-                break;
-            case "ArrowRight":
-                if (this.player.x < MAP_SIZE - 64) {
-                    this.player.x += 64;
-                }
-    
-                break;
-            default:
-                return; // Quit when this doesn't handle the key event.
+
+        if (!this.currentStep) {
+            this.currentStep = event.key;
         }
-    
         // Cancel the default action to avoid it being handled twice
         event.preventDefault();
     }
 
 }
 
-container.addChild(new Player())
+const player = new Player();
+container.addChild(player)
 
 
+app.ticker.add(() => {
+    switch (player.currentStep) {
+        case "ArrowDown":
+            if (player.y < MAP_SIZE - 64) {
+                player.y += 64;
+            }
 
+            player.currentStep = null;
+            break;
+        case "ArrowUp":
+            if (player.y > 64) {
+                player.y -= 64;
+            }
+
+            player.currentStep = null;
+            break;
+        case "ArrowLeft":
+            if (player.x > 64) {
+                player.x -= 64;
+            }
+
+            player.currentStep = null;
+            break;
+        case "ArrowRight":
+            if (player.x < MAP_SIZE - 64) {
+                player.x += 64;
+            }
+
+            player.currentStep = null;
+            break;
+        default:
+            return; // Quit when this doesn't handle the key event.
+    }
+})
 
 
 var graphics = new Graphics();
@@ -114,7 +124,7 @@ graphics.alpha = 0.5;
 async function main() {
     const sound = Sound.from('beat.wav');
     inst = await sound.play();
-    
+
     const timePerBeat = 60 / 130 * 4;
 
     app.ticker.add(dt => {
@@ -128,7 +138,7 @@ async function main() {
         } else {
             graphics.alpha -= 0.03 * dt;
         }
-    
+
     });
 }
 
